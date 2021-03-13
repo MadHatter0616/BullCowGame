@@ -2,6 +2,10 @@
 #include <iostream>
 #include <string>
 #include "FBullCowGame.h"
+#include "Menu.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <windows.h>
 
 using FText = std::string;
 
@@ -30,6 +34,7 @@ int main() {
 
 void PrintIntro()
 {
+	//Menu_UI_oneplayer();
 	std::cout << "Welcome to Bulls and Cows ,a fun word game. " << std::endl;
 	std::cout << "Can you guess the ";
 	std::cout << " letter isogram I'm thinking about?\n\n";
@@ -40,7 +45,7 @@ void Play()
 {
 	BCGame.reset();
 	FText  Guess = "";
-	BullCowCount BCCount;
+	FBullCowCount BCCount;
 
 	while (!BCGame.IsGameWon() && BCGame.GetCurrentTries() <= BCGame.GetMaxTries()) {
 		
@@ -70,23 +75,23 @@ FText GetGuess()
 
 bool GetGuessResult(FText Guess)
 {
-	BullCowStatus Status;
+	EBullCowStatus Status;
 	Status = BCGame.CheckGuess(Guess);
 	switch (Status)
 	{
-	case BullCowStatus::Too_Short:
+	case EBullCowStatus::Too_Short:
 		std::cout << "Please Enter 4 Number!! Your Input too short!\n\n";
 		break;
-	case BullCowStatus::Too_Long:
+	case EBullCowStatus::Too_Long:
 		std::cout << "Please Enter 4 Number!! Your Input too long!\n\n";
 		break;
-	case BullCowStatus::Not_Isogram:
+	case EBullCowStatus::Not_Isogram:
 		std::cout << "Please Enter a Isogram!! \n\n";
 		break;
-	case BullCowStatus::Not_number:
+	case EBullCowStatus::Not_number:
 		std::cout << "Please Enter a Number !!\n\n";
 		break;
-	case BullCowStatus::OK:
+	case EBullCowStatus::OK:
 		return true;
 		break;
 	default:
@@ -109,9 +114,12 @@ bool AskPlayAgain()
 
 void SummaryGame() {
 	if (BCGame.IsGameWon()) {
-		std::cout << "You Win This Time !\n" << std::endl;
+		std::cout << "You Win This Time !\n" ;
+		std::cout << "The Corrent Number is " << BCGame.GetHiddenWord() <<" !!\n"<< std::endl;
 	}
 	else {
-		std::cout << "Sorry You Lose!! Better Luck Next Time!\n" << std::endl;
+		std::cout << "Sorry You Lose!! Better Luck Next Time!\n";
+		std::cout << "The Corrent Number is " << BCGame.GetHiddenWord() << " !!\n" << std::endl;
 	}
 }
+

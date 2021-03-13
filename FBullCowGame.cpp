@@ -1,6 +1,9 @@
 #include "FBullCowGame.h"
 #include <string>
 #include <map>
+#include <time.h>
+#include <cstdlib>
+#include<iostream>
 #define TMap std::map
 
 using FString = std::string;
@@ -11,24 +14,46 @@ int32 FBullCowGame::GetCurrentTries() const { return MyCurrentTries; }
 int32 FBullCowGame::GetMaxTries() const { return MyMaxTries; }
 int32 FBullCowGame::GetHiddenWordLength()const { return HiddenWord.length();}
 bool FBullCowGame::IsGameWon() const { return IsGameWin; }
+FString FBullCowGame::GetHiddenWord() { return HiddenWord; }
 
 void FBullCowGame::reset()
 {
 	MyCurrentTries = 1;
 	MyMaxTries = 7;
-	HiddenWord = "1047";
+	HiddenWord = RandomHiddenworld();
 	IsGameWin = false;
 }
 
-
-BullCowStatus FBullCowGame::CheckGuess(FString Guess)
+FString FBullCowGame::RandomHiddenworld()
 {
-	if (Guess.length() < GetHiddenWordLength()) {return BullCowStatus::Too_Short;}
-	if (Guess.length() > GetHiddenWordLength()) { return BullCowStatus::Too_Long;}
-	if (!IsAllNumber(Guess)) { return BullCowStatus::Not_number; }
-	if (!IsIsogram(Guess)) { return BullCowStatus::Not_Isogram; }
+	char RandomWord[5];
+	srand(time(NULL));
+	TMap<char, bool> letterseen;
+	for (int i = 0 ; i < 4 ; i++) {
+		int word = rand() % 10 + 48;
+		if (letterseen[word]) {
+			i--;
+		}
+		else {
+			RandomWord[i] = word;
+			letterseen[word] = true;
+		}
+	}
+	RandomWord[4] = '\0';
+		return RandomWord;
+}
 
-	return BullCowStatus::OK;
+
+
+
+EBullCowStatus FBullCowGame::CheckGuess(FString Guess)
+{
+	if (Guess.length() < GetHiddenWordLength()) {return EBullCowStatus::Too_Short;}
+	if (Guess.length() > GetHiddenWordLength()) { return EBullCowStatus::Too_Long;}
+	if (!IsAllNumber(Guess)) { return EBullCowStatus::Not_number; }
+	if (!IsIsogram(Guess)) { return EBullCowStatus::Not_Isogram; }
+
+	return EBullCowStatus::OK;
 }
 
 
@@ -58,11 +83,11 @@ bool FBullCowGame::IsIsogram(FString Guess)const
 }
 
 
-BullCowCount FBullCowGame::SubmitGuess(FString Guess)
+FBullCowCount FBullCowGame::SubmitGuess(FString Guess)
 {
 	MyCurrentTries++;
 
-	BullCowCount BCcount;
+	FBullCowCount BCcount;
 
 	for (int i = 0; i < Guess.length(); i++) {
 		for (int j = 0; j < GetHiddenWordLength(); j++) {
